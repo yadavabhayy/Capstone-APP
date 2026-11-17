@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SecureVault · Personal Data-Scoped Workspace</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%236366f1'><path d='M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 6c1.66 0 3 1.34 3 3 0 .84-.35 1.6-.92 2.15l1.42 2.85h-7l1.42-2.85A2.99 2.99 0 019 10c0-1.66 1.34-3 3-3z'/></svg>">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Global Navigation Bar -->
+  <header class="navbar">
+    <div class="nav-container">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">SecureVault</span>
+          <span class="brand-badge">Capstone</span>
+        </div>
+      </div>
+
+      <!-- Auth State Header Info -->
+      <div class="nav-actions" id="nav-actions">
+        <!-- Rendered dynamically by JS -->
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Application Body -->
+  <main class="main-content">
+
+    <!-- ============================================== -->
+    <!-- VIEW 1: AUTHENTICATION (When logged out)       -->
+    <!-- ============================================== -->
+    <section id="auth-view" class="auth-view hidden">
+      <div class="auth-hero">
+        <div class="security-pill">
+          <span class="pulse-dot"></span>
+          <span>Zero-Leakage Architecture · Bcrypt Hashed · Row-Level Scoped</span>
+        </div>
+        <h1>Your Private, Multi-Tenant Workspace</h1>
+        <p class="hero-subtitle">
+          Sign in to access your personal data vault. Every single query is strictly scoped to your identity, ensuring total data privacy and zero cross-account leakage.
+        </p>
+
+        <!-- Quick 1-Click Demo Logins for Reviewers/Employers -->
+        <div class="demo-box">
+          <div class="demo-header">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            <span>Instant Demo Switcher (Test Data Scoping with 1 Click)</span>
+          </div>
+          <p class="demo-explainer">Click either profile below to verify that Alice and Bob see completely different, isolated records:</p>
+          <div class="demo-buttons">
+            <button class="btn btn-demo" id="btn-demo-alice">
+              <span class="avatar-circle">A</span>
+              <div class="demo-btn-text">
+                <strong>Sign in as Alice</strong>
+                <small>Work, Personal & Finance data</small>
+              </div>
+            </button>
+            <button class="btn btn-demo" id="btn-demo-bob">
+              <span class="avatar-circle bob">B</span>
+              <div class="demo-btn-text">
+                <strong>Sign in as Bob</strong>
+                <small>Client & Training data</small>
+              </div>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Auth Form Card -->
+      <div class="auth-card-container">
+        <div class="auth-card">
+          <div class="auth-tabs">
+            <button id="tab-login" class="auth-tab active">Sign In</button>
+            <button id="tab-register" class="auth-tab">Create Account</button>
+          </div>
+
+          <!-- Alert message box -->
+          <div id="auth-alert" class="alert hidden"></div>
+
+          <!-- Sign In Form -->
+          <form id="form-login" class="auth-form">
+            <div class="form-group">
+              <label for="login-email">Email Address</label>
+              <input type="email" id="login-email" placeholder="you@example.com" required autocomplete="email">
+            </div>
+            <div class="form-group">
+              <label for="login-password">Password</label>
+              <div class="password-input-wrapper">
+                <input type="password" id="login-password" placeholder="••••••••" required autocomplete="current-password">
+                <button type="button" class="btn-toggle-password" data-target="login-password" aria-label="Toggle password visibility">👁️</button>
+              </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="btn-submit-login">
+              <span>Sign In</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+            </button>
+          </form>
+
+          <!-- Register Form -->
+          <form id="form-register" class="auth-form hidden">
+            <div class="form-group">
+              <label for="reg-name">Full Name</label>
+              <input type="text" id="reg-name" placeholder="John Doe" required autocomplete="name">
+            </div>
+            <div class="form-group">
+              <label for="reg-email">Email Address</label>
+              <input type="email" id="reg-email" placeholder="you@example.com" required autocomplete="email">
+            </div>
+            <div class="form-group">
+              <label for="reg-password">Password (Min. 6 chars)</label>
+              <div class="password-input-wrapper">
+                <input type="password" id="reg-password" placeholder="••••••••" required minlength="6" autocomplete="new-password">
+                <button type="button" class="btn-toggle-password" data-target="reg-password" aria-label="Toggle password visibility">👁️</button>
+              </div>
+              <small class="form-hint">Hashed with bcrypt (10 rounds) before database storage.</small>
+            </div>
+            <button type="submit" class="btn btn-primary btn-block" id="btn-submit-register">
+              <span>Create Account</span>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+            </button>
+          </form>
+
+          <div class="auth-footer-badge">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+            <span>Stored passwords are cryptographically salted & hashed</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- VIEW 2: AUTHENTICATED VAULT DASHBOARD          -->
+    <!-- ============================================== -->
+    <section id="vault-view" class="vault-view hidden">
+
+      <!-- Isolation Security Banner -->
+      <div class="security-banner">
+        <div class="security-banner-content">
+          <div class="banner-badge">
+            <span class="dot-green"></span>
+            <strong>Scoped Session Active</strong>
+          </div>
+          <div class="banner-text">
+            Logged in as <strong id="banner-user-name">User</strong> (<span id="banner-user-email">email</span>).
+            <span class="text-dim">You are exclusively viewing records where</span>
+            <code>WHERE user_id = <span id="banner-user-id">0</span></code>.
+          </div>
+        </div>
+        <div class="banner-actions">
+          <button class="btn btn-sm btn-outline" id="btn-quick-switch-demo">
+            🔄 Switch to Alternate Demo User
+          </button>
+        </div>
+      </div>
+
+      <!-- Summary Statistics KPI Cards -->
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-info">
+            <span class="stat-label">Total Vault Items</span>
+            <span class="stat-value" id="stat-total">0</span>
+          </div>
+          <div class="stat-icon icon-purple">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-info">
+            <span class="stat-label">Active Items</span>
+            <span class="stat-value" id="stat-active">0</span>
+          </div>
+          <div class="stat-icon icon-blue">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 14 14"/></svg>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-info">
+            <span class="stat-label">Completed</span>
+            <span class="stat-value" id="stat-completed">0</span>
+          </div>
+          <div class="stat-icon icon-green">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+          </div>
+        </div>
+
+        <div class="stat-card">
+          <div class="stat-info">
+            <span class="stat-label">High Priority</span>
+            <span class="stat-value" id="stat-high">0</span>
+          </div>
+          <div class="stat-icon icon-red">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action & Filter Controls Bar -->
+      <div class="controls-card">
+        <div class="controls-search-row">
+          <div class="search-box">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <input type="text" id="filter-search" placeholder="Search your private notes, tasks, or documents...">
+          </div>
+          <button class="btn btn-primary" id="btn-open-create-modal">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>New Item</span>
+          </button>
+        </div>
+
+        <div class="controls-filter-row">
+          <!-- Category Pills -->
+          <div class="filter-group">
+            <span class="filter-label">Category:</span>
+            <div class="pill-group" id="category-pills">
+              <button class="pill active" data-category="All">All</button>
+              <button class="pill" data-category="Work">Work</button>
+              <button class="pill" data-category="Personal">Personal</button>
+              <button class="pill" data-category="Finance">Finance</button>
+              <button class="pill" data-category="Ideas">Ideas</button>
+              <button class="pill" data-category="Tasks">Tasks</button>
+            </div>
+          </div>
+
+          <!-- Secondary Filters (Status & Sort) -->
+          <div class="filter-selectors">
+            <div class="select-wrapper">
+              <label for="filter-status">Status</label>
+              <select id="filter-status">
+                <option value="All">All Statuses</option>
+                <option value="active">Active</option>
+                <option value="completed">Completed</option>
+                <option value="archived">Archived</option>
+              </select>
+            </div>
+
+            <div class="select-wrapper">
+              <label for="filter-priority">Priority</label>
+              <select id="filter-priority">
+                <option value="All">All Priorities</option>
+                <option value="high">High</option>
+                <option value="medium">Medium</option>
+                <option value="low">Low</option>
+              </select>
+            </div>
+
+            <div class="select-wrapper">
+              <label for="filter-sort">Sort</label>
+              <select id="filter-sort">
+                <option value="newest">Newest First</option>
+                <option value="oldest">Oldest First</option>
+                <option value="priority">Priority</option>
+                <option value="title">Title (A-Z)</option>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Items Section -->
+      <div class="items-header">
+        <h2 class="section-title">Your Private Vault Records (<span id="items-count-badge">0</span>)</h2>
+        <span class="items-subtext">Only you have authorization to read or alter these items</span>
+      </div>
+
+      <!-- Vault Items Grid -->
+      <div id="items-grid" class="items-grid">
+        <!-- Rendered dynamically via JavaScript -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="empty-state" class="empty-state hidden">
+        <div class="empty-icon">
+          <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+        </div>
+        <h3>No records found</h3>
+        <p>Your scoped personal vault is clean. Create a new encrypted item to get started.</p>
+        <button class="btn btn-primary" id="btn-empty-create">Create Your First Note</button>
+      </div>
+
+    </section>
+
+  </main>
+
+  <!-- ============================================== -->
+  <!-- MODAL: CREATE / EDIT ITEM                      -->
+  <!-- ============================================== -->
+  <div id="item-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <h3 id="modal-title">Create Private Item</h3>
+        <button class="modal-close" id="btn-close-modal">&times;</button>
+      </div>
+
+      <form id="form-item" class="modal-form">
+        <input type="hidden" id="item-id">
+
+        <div class="form-group">
+          <label for="item-title">Title <span class="required">*</span></label>
+          <input type="text" id="item-title" placeholder="e.g. Q4 Strategy Review" required>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="item-category">Category</label>
+            <select id="item-category">
+              <option value="Work">Work</option>
+              <option value="Personal">Personal</option>
+              <option value="Finance">Finance</option>
+              <option value="Ideas">Ideas</option>
+              <option value="Tasks">Tasks</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="item-priority">Priority</label>
+            <select id="item-priority">
+              <option value="low">Low</option>
+              <option value="medium" selected>Medium</option>
+              <option value="high">High</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label for="item-status">Status</label>
+            <select id="item-status">
+              <option value="active" selected>Active</option>
+              <option value="completed">Completed</option>
+              <option value="archived">Archived</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="item-content">Content / Notes</label>
+          <textarea id="item-content" rows="5" placeholder="Write your private notes, checklist, or sensitive snippet..."></textarea>
+        </div>
+
+        <div class="form-group-checkbox">
+          <label class="checkbox-container">
+            <input type="checkbox" id="item-pinned">
+            <span class="checkmark"></span>
+            Pin to top of vault
+          </label>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="btn-cancel-modal">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="btn-save-item">Save to Vault</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: DELETE CONFIRMATION                     -->
+  <!-- ============================================== -->
+  <div id="delete-modal" class="modal-backdrop hidden">
+    <div class="modal-dialog modal-dialog-sm">
+      <div class="modal-header">
+        <h3>Confirm Deletion</h3>
+        <button class="modal-close" id="btn-close-delete-modal">&times;</button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure you want to permanently remove <strong id="delete-item-title">this item</strong> from your vault? This action cannot be undone.</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="btn-cancel-delete">Cancel</button>
+        <button type="button" class="btn btn-danger" id="btn-confirm-delete">Delete Item</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-container">
+      <p>SecureVault Capstone · Built with Node.js, Express, Better-SQLite3, Bcrypt & JWT</p>
+      <p class="footer-sub">Verified multi-tenant architecture with user-scoped row-level security</p>
+    </div>
+  </footer>
+
+  <script src="/js/app.js"></script>
+</body>
+</html>
