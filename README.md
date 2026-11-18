@@ -221,4 +221,4 @@ You can deploy this project completely free on **Render** (or Railway / Koyeb) i
 ---
 
 ## 📜 License
-MIT License. Created by Atulendra Singh Yadav.
+MIT License. Created by Abhay Pratap Singh Yadav.
